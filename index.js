@@ -36,7 +36,12 @@ async function run() {
     })
 
     app.get('/allAssignment', async(req, res) => {
-        const result = await assignmentCollection.find().toArray()
+        const difficult = req.query.query;
+        let query = {}
+        if(difficult){
+            query = {difficulty:difficult}
+        }
+        const result = await assignmentCollection.find(query).toArray()
         res.send(result)
     })
 
