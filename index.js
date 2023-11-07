@@ -81,7 +81,8 @@ async function run() {
     })
 
     app.get('/load-submitData', async(req, res) => {
-         const result = await submitAssignmentCollection.find().toArray();
+         const query = {status:'submitted'};
+         const result = await submitAssignmentCollection.find(query).toArray();
          res.send(result);
     })
 
@@ -91,6 +92,31 @@ async function run() {
           const query = {_id: new ObjectId(id)};
           const result = await submitAssignmentCollection.findOne(query);
           res.send(result)
+    })
+
+    app.patch('/marking-assignment/:id', async(req, res) => {
+            const id  = req.params.id;
+            const newData = req.body
+            const query = {_id: new ObjectId(id)};
+            const options = { upsert: true };
+            const doc = {
+              $set:{
+                status: newData.status,
+                givenMarks: newData.givenMarks,
+                feedback: newData.feedback
+
+              }
+            }
+
+            const result = await submitAssignmentCollection.updateOne(query,doc,options);
+            res.send(result);
+    })
+
+
+    app.get('/my-assignment', async(req, res) => {
+          const query = {status:'completed'};
+          const result = await submitAssignmentCollection.find(query).toArray();
+          res.send(result);
     })
 
 
