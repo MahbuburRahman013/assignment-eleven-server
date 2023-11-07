@@ -27,6 +27,7 @@ async function run() {
     await client.connect();
          
     const assignmentCollection = client.db('assignmentEleven').collection('assignment');
+    const submitAssignmentCollection = client.db('assignmentEleven').collection('submitAssignment');
 
     
     app.post('/assignment', async(req, res) => {
@@ -70,6 +71,13 @@ async function run() {
 
         const result = await assignmentCollection.updateOne(query,update,options);
         res.send(result)
+    })
+
+
+    app.post('/submitted-assignment', async(req, res) => {
+         const data = req.body.allData;
+         const result = await submitAssignmentCollection.insertOne(data);
+         res.send(result)
     })
 
 
