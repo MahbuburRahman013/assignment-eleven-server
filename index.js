@@ -114,7 +114,8 @@ async function run() {
 
 
     app.get('/my-assignment', async(req, res) => {
-          const query = {status:'completed'};
+          const email = req.query.email
+          const query = {status:'completed', submittedUser: email};
           const result = await submitAssignmentCollection.find(query).toArray();
           res.send(result);
     })
@@ -122,7 +123,11 @@ async function run() {
 
     app.delete('/delete-assignment/:id', async(req, res) => {
          const id = req.params.id;
-         const query = {_id: new ObjectId(id)};
+         const email = req.query.query;
+         if(!email){
+            return res.send({message:'forbidden access!'})
+         }
+         const query = {_id: new ObjectId(id), user: email};
          const result = await assignmentCollection.deleteOne(query);
          res.send(result)
     })
