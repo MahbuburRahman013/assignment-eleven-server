@@ -80,6 +80,19 @@ async function run() {
          res.send(result)
     })
 
+    app.get('/load-submitData', async(req, res) => {
+         const result = await submitAssignmentCollection.find().toArray();
+         res.send(result);
+    })
+
+
+    app.get('/modal-data/:id', async(req, res) => {
+          const id = req.params.id;
+          const query = {_id: new ObjectId(id)};
+          const result = await submitAssignmentCollection.findOne(query);
+          res.send(result)
+    })
+
 
     app.delete('/delete-assignment/:id', async(req, res) => {
          const id = req.params.id;
