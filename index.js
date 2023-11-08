@@ -51,12 +51,14 @@ async function run() {
 
   app.post('/logout', async(req, res) =>{
       const user = req.body;
-      
       res.clearCookie('token', {maxAge: 0}).send({success: true})
   })
 
 
-
+  app.get('/assignmentCount', async(req, res) => {
+    const result = await assignmentCollection.estimatedDocumentCount()
+    res.send({result})
+ })
     
     app.post('/assignment', async(req, res) => {
         const assignment = req.body.assignment;
@@ -66,11 +68,14 @@ async function run() {
 
     app.get('/allAssignment', async(req, res) => {
         const difficult = req.query.query;
+        const data = req.query;
+        const page = parseInt(data.page);
+        const size = parseInt(data.size);
         let query = {}
         if(difficult){
             query = {difficulty:difficult}
         }
-        const result = await assignmentCollection.find(query).toArray()
+        const result = await assignmentCollection.find(query).skip(page * size).limit(size).toArray()
         res.send(result)
     })
 
