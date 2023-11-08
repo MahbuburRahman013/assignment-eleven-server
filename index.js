@@ -11,7 +11,7 @@ app.use(cors({
   origin:[
     
     'https://assignment-eleven-66826.web.app',
-    'https://assignment-eleven-66826.firebaseapp.com'
+    'https://assignment-eleven-66826.firebaseapp.com',
 
 ],
   credentials:true
@@ -68,8 +68,8 @@ async function run() {
        res
        .cookie('token', token, {
         httpOnly: true,
-        secure: true,
-        sameSite:'none'
+        secure: process.env.NODE_ENV === 'production',
+        sameSite:process.env.NODE_ENV === 'production'?'none':'strict',
        })
        .send({success:true})
   })
@@ -204,9 +204,9 @@ async function run() {
 
     // Send a ping to confirm a successful connection
     // await client.db("admin").command({ ping: 1 });
-    // console.log(
-    //   "Pinged your deployment. You successfully connected to MongoDB!"
-    // );
+    console.log(
+      "Pinged your deployment. You successfully connected to MongoDB!"
+    );
   } finally {
     // Ensures that the client will close when you finish/error
     // await client.close();
