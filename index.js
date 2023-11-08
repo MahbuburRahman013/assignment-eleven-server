@@ -1,12 +1,18 @@
 const express = require("express");
 const cors = require("cors");
 require('dotenv').config()
+const cookieParser = require('cookie-parser')
+const jwt = require('jsonwebtoken');
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 const app = express();
 const port = process.env.PORT || 5000;
 
-app.use(cors());
+app.use(cors({
+  origin:['http://localhost:5173'],
+  credentials:true
+}));
 app.use(express.json());
+app.use(cookieParser())
 
 
 const uri =
@@ -28,6 +34,28 @@ async function run() {
          
     const assignmentCollection = client.db('assignmentEleven').collection('assignment');
     const submitAssignmentCollection = client.db('assignmentEleven').collection('submitAssignment');
+
+
+  app.post('/jwt', async(req, res) => {
+       const email = req.body
+       console.log(email)
+       const token = jwt.sign(email, "dflkjfk" , {expiresIn:'1h'})
+       res
+       .cookie('token', token, {
+        httpOnly: true,
+        secure: true,
+        sameSite:'none'
+       })
+       .send({success:true})
+  })
+
+  app.post('/logout', async(req, res) =>{
+      const user = req.body;
+      
+      res.clearCookie('token', {maxAge: 0}).send({success: true})
+  })
+
+
 
     
     app.post('/assignment', async(req, res) => {
